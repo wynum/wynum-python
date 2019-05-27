@@ -17,17 +17,15 @@ client = Client(secret, token)
 ## Get schema
 call ```getschema``` on ```Client``` to get the keys and types for the data. This will return a ```list``` of ```Schema``` objects.  ```Schema.key``` will return the key and ```Schema.type``` will return the Wynum type. Following is the mapping from Wynum type to python type.
 
-```Python
-| Wynum type            | Python type      |
-| --------------------- | ---------------- |
-| Text                  | str              |
-| Date                  | str (dd/mm/yyyy) |
-| Number                | int / float      |
-| Choice (Or)           | int / float      |
-| Multiple Choice (And) | list of str      |
-| Time                  | str (hh:mm)      |
-| File                  | File             |
-```
+| Wynum type            | Python type              |
+| --------------------- | ------------------------ |
+| Text                  | ```str```                |
+| Date                  | ```str``` (dd/mm/yyyy)   |
+| Number                | ```int``` or ```float``` |
+| Choice (Or)           | ```int``` or ```float``` |
+| Multiple Choice (And) | ```list``` of ```str```  |
+| Time                  | ```str``` (hh:mm)        |
+| File                  | ```File```               |
 
 ```python
 schemas = client.getschema()
