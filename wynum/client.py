@@ -1,5 +1,7 @@
 import json
+
 import requests
+from . import schema
 
 
 class Client(object):
@@ -12,20 +14,27 @@ class Client(object):
         self.__token = token
         self.__schema_url = "{}/{}".format(self.SCHEMA_BASE_URL, token)
         self.__data_url = "{}/{}".format(self.DATA_BASE_URL, token)
-    
+        self.identifier = None
+        self.schema = None
+
     def getschema(self):
         response = requests.get(self.__schema_url)
-        return response.json()
-    
+        schema_json_list = response.json()['components']
+        schemas = [schema.Schema(json) for json in schema_json_list]
+        self.schema = schemas
+        self.identifier = response.json()['identifer']
+        return schemas
+
     def getdata(self):
         raise NotImplementedError
-    
+
+    def update(self, data):
+        response = requests.put(self.__data_url, data=json.dumps(data))
+        return response.json()
+
     def postdata(self, data):
         response = requests.post(self.__data_url, data=json.dumps(data))
         return response.json()
 
     def __validate_data(self, data, schema):
-        raise NotImplementedError
-
-    def __parse_schema(self, schema_json):
         raise NotImplementedError
