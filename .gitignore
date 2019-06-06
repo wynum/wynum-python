@@ -2,3 +2,6 @@ wynum/__pycache__
 .vscode
 test.py
 *.pyc
+build
+dist
+wynum.egg-info
