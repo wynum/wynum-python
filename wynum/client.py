@@ -27,8 +27,10 @@ class Client(object):
         self.identifier = response.json()['identifer']
         return schemas
 
-    def getdata(self):
-        raise NotImplementedError
+    def getdata(self, **kwargs):
+        kwargs = self.__validate_and_parse_args(kwargs)
+        response = requests.get(self.__data_url, params=kwargs)
+        return response.json()
 
     def update(self, data):
         response = requests.put(self.__data_url, data=json.dumps(data))
@@ -40,3 +42,34 @@ class Client(object):
 
     def __validate_data(self, data, schema):
         raise NotImplementedError
+    
+    def __validate_and_parse_args(self, args):
+        if (args.get('ids')):
+            args['ids'] = ','.join([str(i) for i in args['ids']])
+
+        if (args.get('order_by')):
+            if not (args['order_by'] in ['asc', 'desc'] and type(args['order_by'] == 'str')):
+                raise ValueError("order_by must be 'asc' or 'desc'")
+            args['order_by'] = args['order_by'].upper()
+
+        if (args.get('limit')):
+            if type(args['limit']) != int:
+                raise ValueError('limit must be a non-negative integer')
+            if args['limit'] < 0:
+                raise ValueError('limit must be a non-negative integer')
+        
+        if (args.get('to')):
+            if type(args['to']) != int:
+                raise ValueError('to must be a non-negative integer')
+
+        if (args.get('start')):
+            if type(args['start']) != int:
+                raise ValueError('start must be a non-negative integer')
+
+        if (args.get('to') and args.get('start')):
+            if (args['to'] < args['start']):
+                raise ValueError('to must be greater than start')
+            args['from'] = args['start']
+            args.pop('start')
+        
+        return args
