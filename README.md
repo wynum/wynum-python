@@ -45,7 +45,22 @@ res = client.postdata(data)
 If the call is successful it returns the ```dict``` containing the created data instance. If there is some error the ```dict``` will contain ```_error``` and ```_message``` keys.  You should check this to check for errors.
 
 ## Get data
-Call ```getdata``` to get the data. This will return ```list``` of ```dict```
+Call ```getdata``` to get the data. This will return ```list``` of ```dict```. ```getdata``` accepts following keyword arguments
+- ```limit```: ```int```
+    <br>Number of records to return.
+- ```order_by```: ```str```
+    <br> Sorting order which can either be 'asc' or desc'
+- ```ids```: ```list``` of ```str```
+    <br> The list of ids to retrieve
+- ```start```: ```int```
+    <br> Record number to start from
+- ```to```: ```int```
+    <br> Record number to end at
+
+```start``` and `to` can be used for pagination.
+
+If no arguments are provided it will return the list of all data records.
+
 ```python
 data = client.getdata()
 ```
