@@ -42,13 +42,14 @@ class Client(object):
 
     def __validate_data(self, data, schema):
         raise NotImplementedError
-    
+
     def __validate_and_parse_args(self, args):
         if (args.get('ids')):
             args['ids'] = ','.join([str(i) for i in args['ids']])
 
         if (args.get('order_by')):
-            if not (args['order_by'] in ['asc', 'desc'] and type(args['order_by'] == 'str')):
+            if not (args['order_by'] in ['asc', 'desc'] and 
+                type(args['order_by'] == 'str')):
                 raise ValueError("order_by must be 'asc' or 'desc'")
             args['order_by'] = args['order_by'].upper()
 
@@ -57,7 +58,7 @@ class Client(object):
                 raise ValueError('limit must be a non-negative integer')
             if args['limit'] < 0:
                 raise ValueError('limit must be a non-negative integer')
-        
+
         if (args.get('to')):
             if type(args['to']) != int:
                 raise ValueError('to must be a non-negative integer')
@@ -71,5 +72,5 @@ class Client(object):
                 raise ValueError('to must be greater than start')
             args['from'] = args['start']
             args.pop('start')
-        
+
         return args
