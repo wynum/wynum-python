@@ -12,8 +12,10 @@ class Client(object):
     def __init__(self, secret, token):
         self.__secret = secret
         self.__token = token
-        self.__schema_url = "{}/{}".format(self.SCHEMA_BASE_URL, token)
-        self.__data_url = "{}/{}".format(self.DATA_BASE_URL, token)
+        self.__schema_url = "{}/{}?secret_key={}".format(
+            self.SCHEMA_BASE_URL, token, secret)
+        self.__data_url = "{}/{}?secret_key={}".format(
+            self.DATA_BASE_URL, token, secret)
         self.identifier = None
         self.schema = None
 
