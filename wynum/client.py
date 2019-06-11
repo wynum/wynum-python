@@ -1,7 +1,8 @@
 import json
 
 import requests
-from . import schema
+from .schema import Schema
+from .auth_exception import AuthException
 
 
 class Client(object):
@@ -21,8 +22,9 @@ class Client(object):
 
     def getschema(self):
         response = requests.get(self.__schema_url)
+        self.__validate_response(response.json())
         schema_json_list = response.json()['components']
-        schemas = [schema.Schema(json) for json in schema_json_list]
+        schemas = [Schema(json) for json in schema_json_list]
         self.schema = schemas
         self.identifier = response.json()['identifer']
         return schemas
@@ -30,16 +32,37 @@ class Client(object):
     def getdata(self, **kwargs):
         kwargs = self.__validate_and_parse_args(kwargs)
         response = requests.get(self.__data_url, params=kwargs)
+        self.__validate_response(response.json())
         return response.json()
 
     def update(self, data):
         response = requests.put(self.__data_url, data=json.dumps(data))
+        self.__validate_response(response.json())
         return response.json()
 
     def postdata(self, data):
-        response = requests.post(self.__data_url, data=json.dumps(data))
+        if self.__has_files(data):
+            files, data = self.__seperate_files_and_data(data)
+            response = requests.post(self.__data_url, files=files, data=data)
+        else:
+            response = requests.post(self.__data_url, data=data)
+        self.__validate_response(response.json())
         return response.json()
-
+    
+    def __has_files(self, data):
+        for _, val in data.items():
+            if hasattr(val, 'read'):
+                return True
+        return False
+    
+    def __seperate_files_and_data(self, data):
+        files = {}
+        for key, val in data.copy().items():
+            if hasattr(val, 'read'):
+                files[key] = val
+                data.pop(key)
+        return (files, data)
+    
     def __validate_data(self, data, schema):
         raise NotImplementedError
 
@@ -48,8 +71,8 @@ class Client(object):
             args['ids'] = ','.join([str(i) for i in args['ids']])
 
         if (args.get('order_by')):
-            if not (args['order_by'] in ['asc', 'desc'] and 
-                type(args['order_by'] == 'str')):
+            if not (args['order_by'] in ['asc', 'desc'] and
+                    type(args['order_by'] == 'str')):
                 raise ValueError("order_by must be 'asc' or 'desc'")
             args['order_by'] = args['order_by'].upper()
 
@@ -74,3 +97,11 @@ class Client(object):
             args.pop('start')
 
         return args
+
+    def __validate_response(self, data):
+        if (type(data) == dict):
+            if data.get('_error') == True:
+                if data['_message'] == 'Secret Key Error':
+                    raise AuthException('Secret Key Error')
+                elif data['_message'] == 'Not Found':
+                    raise Exception('Invalid Token')
