@@ -36,7 +36,11 @@ class Client(object):
         return response.json()
 
     def update(self, data):
-        response = requests.put(self.__data_url, data=json.dumps(data))
+        if self.__has_files(data):
+            files, data = self.__seperate_files_and_data(data)
+            response = requests.put(self.__data_url, files=files, data=data)
+        else:
+            response = requests.put(self.__data_url, data=data)
         self.__validate_response(response.json())
         return response.json()
 
