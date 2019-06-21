@@ -1,5 +1,7 @@
 # Installation
 ```pip install wynum```
+To install using github try
+```pip install -U -e git+https://github.com/wynum/wynum-python#egg=wynum```
 
 # Getting started
 Very easy to use. Create a ```Client``` and you're ready to go.
