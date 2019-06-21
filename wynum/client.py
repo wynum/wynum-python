@@ -38,27 +38,29 @@ class Client(object):
     def update(self, data):
         if self.__has_files(data):
             files, data = self.__seperate_files_and_data(data)
+            data = {'inputdata': json.dumps(data)}
             response = requests.put(self.__data_url, files=files, data=data)
         else:
-            response = requests.put(self.__data_url, data=data)
+            response = requests.put(self.__data_url, json=data)
         self.__validate_response(response.json())
         return response.json()
 
     def postdata(self, data):
         if self.__has_files(data):
             files, data = self.__seperate_files_and_data(data)
+            data = {'inputdata': json.dumps(data)}
             response = requests.post(self.__data_url, files=files, data=data)
         else:
-            response = requests.post(self.__data_url, data=data)
+            response = requests.post(self.__data_url, json=data)
         self.__validate_response(response.json())
         return response.json()
-    
+
     def __has_files(self, data):
         for _, val in data.items():
             if hasattr(val, 'read'):
                 return True
         return False
-    
+
     def __seperate_files_and_data(self, data):
         files = {}
         for key, val in data.copy().items():
@@ -66,7 +68,7 @@ class Client(object):
                 files[key] = val
                 data.pop(key)
         return (files, data)
-    
+
     def __validate_data(self, data, schema):
         raise NotImplementedError
 
