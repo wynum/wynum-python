@@ -16,6 +16,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/wynum/wynum-python",
     packages=setuptools.find_packages(),
+    test_suite="test",
     install_requires=REQUIRED,
     license='MIT',
     classifiers=[
