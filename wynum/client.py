@@ -2,7 +2,7 @@ import json
 
 import requests
 from .schema import Schema
-from .auth_exception import AuthException
+from .exceptions import *
 
 
 class Client(object):
@@ -110,4 +110,4 @@ class Client(object):
                 if data['_message'] == 'Secret Key Error':
                     raise AuthException('Secret Key Error')
                 elif data['_message'] == 'Not Found':
-                    raise Exception('Invalid Token')
+                    raise InvalidTokenException('Invalid Token')
