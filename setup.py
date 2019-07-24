@@ -8,7 +8,7 @@ REQUIRED = ['requests']
 
 setuptools.setup(
     name="wynum",
-    version="0.0.3",
+    version="0.0.4",
     author="patil-suraj",
     author_email="surajp815@gmail.com",
     description="Wynum API client",
