@@ -32,7 +32,6 @@ class Client(object):
     def getdata(self, filters={}, **kwargs):
         kwargs = self.__validate_and_parse_args(kwargs)
         kwargs.update(filters)
-        print(kwargs)
         response = requests.get(self.__data_url, params=kwargs)
         self.__validate_response(response.json())
         return response.json()
