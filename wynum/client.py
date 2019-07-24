@@ -29,8 +29,10 @@ class Client(object):
         self.identifier = response.json()['identifer']
         return schemas
 
-    def getdata(self, **kwargs):
+    def getdata(self, filters={}, **kwargs):
         kwargs = self.__validate_and_parse_args(kwargs)
+        kwargs.update(filters)
+        print(kwargs)
         response = requests.get(self.__data_url, params=kwargs)
         self.__validate_response(response.json())
         return response.json()
@@ -102,7 +104,10 @@ class Client(object):
             args['from'] = args['start']
             args.pop('start')
 
-        return args
+        parsed_args = {}
+        for key, val in args.items():
+            parsed_args['_{}'.format(key)] = val
+        return parsed_args
 
     def __validate_response(self, data):
         if (type(data) == dict):
