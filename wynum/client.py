@@ -55,6 +55,11 @@ class Client(object):
             response = requests.post(self.__data_url, json=data)
         self.__validate_response(response.json())
         return response.json()
+    
+    def deletedata(self, data):
+        response = requests.delete(self.__data_url, json=data)
+        self.__validate_response(response.json())
+        return response.json() 
 
     def __has_files(self, data):
         for _, val in data.items():
