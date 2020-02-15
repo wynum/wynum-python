@@ -77,3 +77,14 @@ identifer_key = client.identifier
 data = {'key1':val1, 'key2':val2, identifer_key:'id_string'}
 res = client.update(data)
 ```
+
+## Delete Data
+The ```deletedata``` method can be used to delete a particular record. It accepts only single parameter
+- ```data```: ```dict```
+    <br> A dict containing the identifier as the key and the the id of the record that you want to delete as its value
+
+for example if you want to delete a record with id `jarvis` and your unique identifier is `id` then
+```python
+data = {'id': 'jarvis'}
+client.deletedata(data)
+```  
